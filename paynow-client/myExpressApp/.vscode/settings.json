@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "/subscriptions/63241bb6-2327-44e2-ba66-d4b6b5319736/resourceGroups/QiushengResourceGroup/providers/Microsoft.Web/sites/smbcpaynowwebclient",
+    "appService.deploySubpath": "."
+}

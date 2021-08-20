@@ -1,0 +1,35 @@
+extends layout
+
+block content
+  h1 PayNow QR Generator
+
+  #table-wrapper
+    form(action="/qrcode" method="POST")
+      table
+        tr
+          td PayNow ID*:
+          td 
+            input(type='text', name='proxyValue', value="201721448W")
+        tr
+          td Payment Amount*:
+          td 
+            input(type='text', name='amount', value="0.1")
+        tr
+          td Reference:
+          td 
+            input(type='text', name='referenceText',value="smbc test")
+        tr
+          td Expiry Date:
+          td 
+            input(type='text', name='expiryDate', value="20211230")
+        tr
+          td 
+          td 
+            input(type="submit")
+      
+
+
+  p Disclaimer
+  p  This QR Generator and the generated QR code are for SMBC customers only. By clicking on “Generate QR”, I/we confirm that the details inserted above are correct and agree that I/we shall not hold SMBC liable for any damage or loss as a result of any incorrect details inserted above or any misuse of the QR Generator or generated QR code.
+
+

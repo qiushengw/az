@@ -1,0 +1,9 @@
+extends layout
+
+block content
+  h1 PayNow QR Generated 
+  
+  .image-block
+  - var img = result.qrCodeData
+  img.className#IdName(src=img alt="Image Title")  
+
