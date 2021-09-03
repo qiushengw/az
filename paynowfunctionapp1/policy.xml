@@ -1,0 +1,12 @@
+ <validate-jwt header-name="Authorization" failed-validation-httpcode="401" failed-validation-error-message="Unauthorized. Access token is missing or invalid.">
+            <openid-config url="https://login.microsoftonline.com/4f3ecf0a-0671-4764-95c7-3e20bf1f4b69/.well-known/openid-configuration" />
+            <required-claims>
+                <claim name="aud" match="any">
+                    <value>api://389fc556-2936-46b4-8ccf-4311161ff05d</value>
+                    <value>389fc556-2936-46b4-8ccf-4311161ff05d</value>
+                </claim>
+                <claim name="roles" match="any">
+                    <value>Paynow.Request</value>
+                </claim>
+            </required-claims>
+        </validate-jwt>

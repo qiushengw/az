@@ -1,0 +1,293 @@
+################################################################################
+#
+# SMBC APAC
+#
+# OpenAPI Specification template
+#
+################################################################################
+
+openapi: 3.0.0
+
+################################################################################
+# API Info - High-level description
+################################################################################
+
+info:
+
+  #
+  # This is the version no of the Swagger file itself
+  # This version number  should be incremented every time this Swagger file
+  # is changed.
+  #
+  # The Swagger file for a particular version of API typically
+  # has to be changed several times before being finalized
+  #
+
+  x-swagger-file-version: '1.0'
+
+  #
+  # This the version no of the API
+  # Format for version is v<major version no>.<minor version no>, e.g. v2.3
+  #
+
+  version: v1.0
+
+  #
+  # Name of this API
+  #
+  title: Paynow QRcode API
+
+  description: >
+
+    * Generate a PayNow QR code for SMBC corporate customers, to support instant transfer of payment wthout exchange the account numbers
+
+    * Usage of this API is limited to SMBC corporate customs, the API supports both static and dynamic QR code generation
+
+    * This API is called using the Synchronize HTTP POST method, The response is returned in JSON format
+
+
+    ## Transport Security
+
+    All operations in this API require SSL (using TLS1.2 and above) for transport-level security
+
+
+    ## General API Info
+
+    Please refer to this [link](http://external.doc.com) for general information
+    applicable to all APIs
+
+################################################################################
+# Hosting servers for this API
+# Can define multiple server urls with templates
+################################################################################
+
+servers:
+
+  - url: https://{environment}.smbcapac.com/paynow/paynow-qr/v1
+    variables:
+      environment:
+        default: api    # Production server
+        enum:
+          - api         # Production server
+          - api.dev     # Development server
+          - api.staging # Stagging server
+
+################################################################################
+# Paths
+################################################################################
+
+paths:
+  '/qrcode':
+    post:
+      tags:
+        - QRcode
+      summary: Generate a paynow QRcode
+      description: Example of a post operation with a body parameter
+
+      #
+      # Request requestBody:
+      #
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QRRequest'
+        description: customer object to be created
+
+      parameters:
+
+        # Make reference to common parameters in components section
+        - $ref: '#/components/parameters/x-smbcapac-messageid'
+        - $ref: '#/components/parameters/x-smbcapac-country'
+      responses:
+        '200':
+          description: Return the customer object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QRResponse'
+        '400':
+          $ref: '#/components/responses/GatewayError400'
+        '401':
+          $ref: '#/components/responses/GatewayError401'
+        '500':
+          $ref: '#/components/responses/internalError500'
+      # Make reference to applicable common security schemes
+      security:
+        - key: []
+        - customer-auth:
+            - create
+            - update
+            - read
+
+      #
+      # SLA - Extension for SLA - Not published
+      #
+      x-dependencies:
+        value: MAPS Database, Denodo API
+
+      x-target-availability:
+        value: 24/7
+
+      x-target-request-rate:
+        value: 50
+
+      x-target-response-time:
+        value: 3
+
+################################################################################
+# Components section contains common definitions
+# which can be referenced with $ref
+################################################################################
+components:
+
+  #
+  # Reusable path, query, header and cookie parameters
+  #
+  parameters:
+    x-smbcapac-messageid:
+      name: x-smbcapac-messageid
+      description:
+        Unique request Id from API client.
+      in: header
+      required: true
+      schema:
+        type: string
+
+
+    x-smbcapac-country:
+      name: x-smbcapac-country
+      description:
+        Local country code for SMBC APAC branch.
+      in: header
+      required: true
+      schema:
+        type: string
+        enum: [SG, TH, MY, AU, PH, VN, MM, IN]
+
+  #
+  # Common Responses
+  #
+  responses:
+    '200':
+      description: Return the paynow object
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/QRResponse'
+
+    internalError500:
+      # Document specific error codes and messages if possible
+      description:
+        Internal server error
+
+        # table format not yet supported in OAS3 (Nov17)
+        #| resaonCode | reason               | message |
+        #| ---------- | -------------------- | ------- |
+        #| 448        | Data Loading Issue   | Error in loading data to XRef table |
+        #| 457        | Validation Error     | No Output Paramaters Returned |
+
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Exception'
+
+    GatewayError400:
+      description:
+        Bad request - General client error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Exception'
+
+    GatewayError401:
+      description:
+        Authorization error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Exception'
+
+  #
+  # Common Security schemes
+  #
+  securitySchemes:
+
+    customer-auth:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: 'https://azure.smbcapac.com/idm/oauth'
+          scopes:
+            create: create
+            update: modify
+            read: read
+
+    key:
+      type: apiKey
+      in: header
+      name: x-smbcapac-apiKey
+
+  #
+  # Common Schemas
+  #
+  schemas:
+    QRRequest:
+      type: object
+      properties:
+        proxyType:
+          type: string
+          description: proxy type
+          enum: [UEN]
+          example: UEN
+        proxyValue:
+          type: string
+          description: "proxy value, e.g T01LLXXXXA"
+          example: T01LLXXXXA
+        amount:
+          type: string
+          description: "amount to transfer over"
+          example: 14.53
+        referenceText:
+          type: string
+          description: "Remarks"
+          example: "pay house loan from JJ"
+        qrcodeSize:
+          type: integer
+          format: int64
+          description: "Preferred Width & Height in pixels of QR code image"
+          example: 20
+        expiryDate:
+          type: string
+          description: "The expiry date of the QR generated. Format: YYYYMMDD"
+          example: 20210918
+      required:
+        - proxyType
+        - proxyValue
+
+    QRResponse:
+      type: object
+      properties:
+        amount:
+          type: string
+          description: "amount to transfer over"
+          example: 14.53
+        disclaimer:
+          type: string
+          description: "The SMBC disclaimer of the QR code"
+          example: "Disclaimer: xxxxxx"
+        qrCodeData:
+          type: string
+          description: "the Base64Encoded PNG binary data representation of the QR code image. All information should be non-editable."
+          example: "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"
+
+    Exception:
+      type: object
+      properties:
+        message:
+          type: string
+        reasonCode:
+          type: string
+        reason:
+          type: string
