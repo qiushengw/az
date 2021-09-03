@@ -7,28 +7,35 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
+const { data } = require("jquery");
 
-const calApi = async function(jsonData) {
+const calApi = async function(jsonData, subscriptionKey) {
     const authResponse = await auth.getToken(auth.tokenRequest);
     console.log(authResponse);
 
     const options = {
         headers: {
             Authorization: `Bearer ${authResponse.accessToken}`,
+            "Cache-Control": "no-cache",
             "x-smbcapac-messageid": "11111",
             "x-smbcapac-country": "SG",
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "Ocp-Apim-Subscription-Key": subscriptionKey
         }
     };
 
     console.log('request made to web API at: ' + new Date().toString());
 
     try {
-        const response = await axios.default.post(auth.apiConfig.uri, jsonData, options);
-        console.log(response.data);
-        return response.data;
+        const response = await axios.default.post(auth.apiConfig.uri, jsonData, options)
+            .catch(function(error) {
+                console.log("ziqing is coming1: " + JSON.stringify(error.response.data));
+                console.log("ziqing is coming2: " + error.response.status); //400
+                return error;
+            });
+        return response;
     } catch (error) {
-        console.log(error)
+        console.log("error is coming: " + JSON.stringify(error));
         return error;
     }
 };
@@ -60,11 +67,21 @@ app.post('/qrcode', (request, response) => {
         "expiryDate": request.body.expiryDate
     }
 
-    calApi(inputData).then(data => {
-        response.render('display', { title: 'test', result: data });
+    calApi(inputData, request.body.subscriptionKey).then(apiResponse => {
+
+        if (apiResponse.status == 200 || apiResponse.status == 201) {
+            response.render('display', { title: 'test', result: apiResponse.data });
+        } else {
+            // console.log("wang ziqing33" + JSON.stringify(apiResponse.response));
+            response.render('error', { status: apiResponse.response.status, message: apiResponse.response.data.message });
+
+        }
+
     }).catch(e => {
-        //handle error case here when your promise fails
-        console.log(e)
+        var stringdata = JSON.stringify(e);
+        console.log("======>" + e);
+        response.status(e.status || 500);
+        response.render('error', { error: e, message: stringdata });
     })
 })
 

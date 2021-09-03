@@ -6,11 +6,13 @@ const msal = require('@azure/msal-node');
  * https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-node/docs/configuration.md
  */
 
+
+
 const msalConfig = {
     auth: {
-        clientId: "421609d7-f721-446e-83d6-3b84dad63c69",
-        authority: "https://login.microsoftonline.com/d16c6dd4-60c3-49cf-be51-380531796a03",
-        clientSecret: "3XKl65XH.vS3Uxj6.-CqEdg.old53l~9h5"
+        clientId: "c8d8f714-767e-46f1-9b20-0eeb2576d717",
+        authority: "https://login.microsoftonline.com/4f3ecf0a-0671-4764-95c7-3e20bf1f4b69",
+        clientSecret: "5a.B.spwh35u5ufbnZLwFW5P0-~0iEby.w"
     }
 };
 
@@ -20,11 +22,11 @@ const msalConfig = {
  * https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-client-creds-grant-flow
  */
 const tokenRequest = {
-    scopes: ['api://3d259433-b03d-4769-833c-67553fbc3d39/.default']
+    scopes: ['api://389fc556-2936-46b4-8ccf-4311161ff05d/.default']
 };
 
 const apiConfig = {
-    uri: "https://smbcapimtest.azure-api.net/paynow/paynow-qr/v1/qrcode"
+    uri: "https://apimsmbc.azure-api.net/paynow/paynow-qr/v1/qrcode"
 };
 
 /**

@@ -1,0 +1,18 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "subscriptions_611b7f324634611270a5c472_displayName": {
+            "value": null
+        },
+        "subscriptions_611cc8e84634611270a5c4b5_displayName": {
+            "value": null
+        },
+        "users_1_lastName": {
+            "value": null
+        },
+        "service_smbcapimtest_name": {
+            "value": null
+        }
+    }
+}

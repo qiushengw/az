@@ -1,0 +1,1799 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "subscriptions_611b7f324634611270a5c472_displayName": {
+            "type": "SecureString"
+        },
+        "subscriptions_611cc8e84634611270a5c4b5_displayName": {
+            "type": "SecureString"
+        },
+        "users_1_lastName": {
+            "type": "SecureString"
+        },
+        "service_smbcapimtest_name": {
+            "defaultValue": "smbcapimtest",
+            "type": "String"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.ApiManagement/service",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[parameters('service_smbcapimtest_name')]",
+            "location": "Southeast Asia",
+            "sku": {
+                "name": "Developer",
+                "capacity": 1
+            },
+            "properties": {
+                "publisherEmail": "qiushengw@gmail.com",
+                "publisherName": "smbc",
+                "notificationSenderEmail": "apimgmt-noreply@mail.windowsazure.com",
+                "hostnameConfigurations": [
+                    {
+                        "type": "Proxy",
+                        "hostName": "[concat(parameters('service_smbcapimtest_name'), '.azure-api.net')]",
+                        "negotiateClientCertificate": false,
+                        "defaultSslBinding": true,
+                        "certificateSource": "BuiltIn"
+                    }
+                ],
+                "customProperties": {
+                    "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TripleDes168": "false",
+                    "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Protocols.Tls11": "false",
+                    "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Protocols.Tls10": "false",
+                    "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Protocols.Ssl30": "false",
+                    "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Backend.Protocols.Tls11": "false",
+                    "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Backend.Protocols.Tls10": "false",
+                    "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Backend.Protocols.Ssl30": "false",
+                    "Microsoft.WindowsAzure.ApiManagement.Gateway.Protocols.Server.Http2": "false"
+                },
+                "virtualNetworkType": "None",
+                "disableGateway": false,
+                "apiVersionConstraint": {}
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/apis",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/qiushengtestfuncapp1')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ],
+            "properties": {
+                "displayName": "qiushengtestfuncapp1",
+                "apiRevision": "1",
+                "description": "Import from \"qiushengtestfuncapp1\" Function App",
+                "subscriptionRequired": true,
+                "path": "qiushengtestfuncapp1",
+                "protocols": [
+                    "https"
+                ],
+                "isCurrent": true
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/api-version-sets",
+            "apiVersion": "2018-06-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/611b832405e476e7fbb86ac4')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ],
+            "properties": {
+                "displayName": "Paynow QRcode API",
+                "versioningScheme": "Segment"
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/apiVersionSets",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/611b832405e476e7fbb86ac4')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ],
+            "properties": {
+                "displayName": "Paynow QRcode API",
+                "versioningScheme": "Segment"
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/authorizationServers",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/qiushengoauth2service')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ],
+            "properties": {
+                "displayName": "qiushengoauth2service",
+                "clientRegistrationEndpoint": "http://localhost",
+                "authorizationEndpoint": "https://login.microsoftonline.com/d16c6dd4-60c3-49cf-be51-380531796a03/oauth2/v2.0/authorize",
+                "authorizationMethods": [
+                    "GET",
+                    "POST"
+                ],
+                "clientAuthenticationMethod": [
+                    "Body"
+                ],
+                "tokenBodyParameters": [],
+                "tokenEndpoint": "https://login.microsoftonline.com/d16c6dd4-60c3-49cf-be51-380531796a03/oauth2/v2.0/token",
+                "supportState": false,
+                "defaultScope": "api://3d259433-b03d-4769-833c-67553fbc3d39/.default",
+                "grantTypes": [
+                    "authorizationCode",
+                    "clientCredentials"
+                ],
+                "bearerTokenSendingMethods": [
+                    "authorizationHeader"
+                ],
+                "clientId": "421609d7-f721-446e-83d6-3b84dad63c69"
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/backends",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/qiushengtestfuncapp1')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ],
+            "properties": {
+                "description": "qiushengtestfuncapp1",
+                "url": "https://qiushengtestfuncapp1.azurewebsites.net/api",
+                "protocol": "http",
+                "resourceId": "https://management.azure.com/subscriptions/63241bb6-2327-44e2-ba66-d4b6b5319736/resourceGroups/test/providers/Microsoft.Web/sites/qiushengtestfuncapp1",
+                "credentials": {
+                    "header": {
+                        "x-functions-key": [
+                            "{{qiushengtestfuncapp1-key}}"
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/backends",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/smbcpaynowfunc1')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ],
+            "properties": {
+                "description": "smbcpaynowfunc1",
+                "url": "https://smbcpaynowfunc1.azurewebsites.net/api",
+                "protocol": "http",
+                "resourceId": "https://management.azure.com/subscriptions/63241bb6-2327-44e2-ba66-d4b6b5319736/resourceGroups/smbcpaynowfunc1/providers/Microsoft.Web/sites/smbcpaynowfunc1",
+                "credentials": {
+                    "header": {
+                        "x-functions-key": [
+                            "{{smbcpaynowfunc1-key}}"
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/groups",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/administrators')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ],
+            "properties": {
+                "displayName": "Administrators",
+                "description": "Administrators is a built-in group. Its membership is managed by the system. Microsoft Azure subscription administrators fall into this group.",
+                "type": "system"
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/groups",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/developers')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ],
+            "properties": {
+                "displayName": "Developers",
+                "description": "Developers is a built-in group. Its membership is managed by the system. Signed-in users fall into this group.",
+                "type": "system"
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/groups",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/guests')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ],
+            "properties": {
+                "displayName": "Guests",
+                "description": "Guests is a built-in group. Its membership is managed by the system. Unauthenticated users visiting the developer portal fall into this group.",
+                "type": "system"
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/namedValues",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/authclientId')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ],
+            "properties": {
+                "displayName": "authclientId",
+                "value": "421609d7-f721-446e-83d6-3b84dad63c69",
+                "tags": [],
+                "secret": false
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/namedValues",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/authclientSecret')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ],
+            "properties": {
+                "displayName": "authclientSecret",
+                "value": "3XKl65XH.vS3Uxj6.-CqEdg.old53l~9h5",
+                "tags": [],
+                "secret": false
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/namedValues",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/authorizationServer')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ],
+            "properties": {
+                "displayName": "authorizationServer",
+                "value": "https://login.microsoftonline.com/d16c6dd4-60c3-49cf-be51-380531796a03/oauth2/v2.0/token",
+                "tags": [],
+                "secret": false
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/namedValues",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/authscope')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ],
+            "properties": {
+                "displayName": "authscope",
+                "value": "api://3d259433-b03d-4769-833c-67553fbc3d39/Email.Read",
+                "tags": [],
+                "secret": false
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/namedValues",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/qiushengtestfuncapp1-key')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ],
+            "properties": {
+                "displayName": "qiushengtestfuncapp1-key",
+                "tags": [
+                    "key",
+                    "function",
+                    "auto"
+                ],
+                "secret": true
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/namedValues",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/smbcpaynowfunc1-key')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ],
+            "properties": {
+                "displayName": "smbcpaynowfunc1-key",
+                "tags": [
+                    "key",
+                    "function",
+                    "auto"
+                ],
+                "secret": true
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/notifications",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/AccountClosedPublisher')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/notifications",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/BCC')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/notifications",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/NewApplicationNotificationMessage')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/notifications",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/NewIssuePublisherNotificationMessage')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/notifications",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/PurchasePublisherNotificationMessage')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/notifications",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/QuotaLimitApproachingPublisherNotificationMessage')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/notifications",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/RequestPublisherNotificationMessage')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/policies",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/policy')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ],
+            "properties": {
+                "value": "<!--\r\n    IMPORTANT:\r\n    - Policy elements can appear only within the <inbound>, <outbound>, <backend> section elements.\r\n    - Only the <forward-request> policy element can appear within the <backend> section element.\r\n    - To apply a policy to the incoming request (before it is forwarded to the backend service), place a corresponding policy element within the <inbound> section element.\r\n    - To apply a policy to the outgoing response (before it is sent back to the caller), place a corresponding policy element within the <outbound> section element.\r\n    - To add a policy position the cursor at the desired insertion point and click on the round button associated with the policy.\r\n    - To remove a policy, delete the corresponding policy statement from the policy document.\r\n    - Policies are applied in the order of their appearance, from the top down.\r\n-->\r\n<policies>\r\n  <inbound>\r\n    <!--validate-jwt header-name=\"Authorization\" failed-validation-httpcode=\"401\" failed-validation-error-message=\"Unauthorized. Access token is missing or invalid.\">\r\n            <openid-config url=\"https://login.microsoftonline.com/d16c6dd4-60c3-49cf-be51-380531796a03/v2.0/.well-known/openid-configuration\" />\r\n        </validate-jwt-->\r\n    <cors allow-credentials=\"true\">\r\n      <allowed-origins>\r\n        <origin>https://smbcapimtest.developer.azure-api.net</origin>\r\n      </allowed-origins>\r\n      <allowed-methods preflight-result-max-age=\"300\">\r\n        <method>*</method>\r\n      </allowed-methods>\r\n      <allowed-headers>\r\n        <header>*</header>\r\n      </allowed-headers>\r\n      <expose-headers>\r\n        <header>*</header>\r\n      </expose-headers>\r\n    </cors>\r\n  </inbound>\r\n  <backend>\r\n    <forward-request />\r\n  </backend>\r\n  <outbound />\r\n  <on-error />\r\n</policies>",
+                "format": "xml"
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/portalRevisions",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/202108160908')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ],
+            "properties": {
+                "isCurrent": false
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/portalRevisions",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/202108161008')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ],
+            "properties": {
+                "isCurrent": false
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/portalRevisions",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/202108161009')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ],
+            "properties": {
+                "isCurrent": false
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/portalRevisions",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/20210816183315')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ],
+            "properties": {
+                "isCurrent": false
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/portalRevisions",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/20210816184357')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ],
+            "properties": {
+                "isCurrent": false
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/portalRevisions",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/20210817115629')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ],
+            "properties": {
+                "isCurrent": false
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/portalRevisions",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/20210818131424')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ],
+            "properties": {
+                "isCurrent": false
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/portalRevisions",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/20210818162746')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ],
+            "properties": {
+                "isCurrent": false
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/portalRevisions",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/202108191012')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ],
+            "properties": {
+                "isCurrent": false
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/portalRevisions",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/202108191014')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ],
+            "properties": {
+                "isCurrent": false
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/portalRevisions",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/202108191015')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ],
+            "properties": {
+                "isCurrent": false
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/portalRevisions",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/20210824144953')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ],
+            "properties": {
+                "isCurrent": true
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/portalsettings",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/delegation')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ],
+            "properties": {
+                "subscriptions": {
+                    "enabled": false
+                },
+                "userRegistration": {
+                    "enabled": false
+                }
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/portalsettings",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/signin')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ],
+            "properties": {
+                "enabled": false
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/portalsettings",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/signup')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ],
+            "properties": {
+                "enabled": true,
+                "termsOfService": {
+                    "enabled": false,
+                    "consentRequired": false
+                }
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/products",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/data-api')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ],
+            "properties": {
+                "displayName": "ISG-Data",
+                "description": "CURD low level data api",
+                "subscriptionRequired": true,
+                "approvalRequired": false,
+                "state": "published"
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/products",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/paynow')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ],
+            "properties": {
+                "displayName": "Paynow",
+                "description": "for paynow related api",
+                "subscriptionRequired": true,
+                "approvalRequired": false,
+                "subscriptionsLimit": 4,
+                "state": "published"
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/properties",
+            "apiVersion": "2019-01-01",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/authclientId')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ],
+            "properties": {
+                "displayName": "authclientId",
+                "value": "421609d7-f721-446e-83d6-3b84dad63c69",
+                "tags": [],
+                "secret": false
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/properties",
+            "apiVersion": "2019-01-01",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/authclientSecret')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ],
+            "properties": {
+                "displayName": "authclientSecret",
+                "value": "3XKl65XH.vS3Uxj6.-CqEdg.old53l~9h5",
+                "tags": [],
+                "secret": false
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/properties",
+            "apiVersion": "2019-01-01",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/authorizationServer')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ],
+            "properties": {
+                "displayName": "authorizationServer",
+                "value": "https://login.microsoftonline.com/d16c6dd4-60c3-49cf-be51-380531796a03/oauth2/v2.0/token",
+                "tags": [],
+                "secret": false
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/properties",
+            "apiVersion": "2019-01-01",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/authscope')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ],
+            "properties": {
+                "displayName": "authscope",
+                "value": "api://3d259433-b03d-4769-833c-67553fbc3d39/Email.Read",
+                "tags": [],
+                "secret": false
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/properties",
+            "apiVersion": "2019-01-01",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/qiushengtestfuncapp1-key')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ],
+            "properties": {
+                "displayName": "qiushengtestfuncapp1-key",
+                "value": "RM4dJrkDs/RtJCr1ZKjw6kgSYHe1S9feD6BgRL18JCHaLDqFqi2y/A==",
+                "tags": [
+                    "key",
+                    "function",
+                    "auto"
+                ],
+                "secret": true
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/properties",
+            "apiVersion": "2019-01-01",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/smbcpaynowfunc1-key')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ],
+            "properties": {
+                "displayName": "smbcpaynowfunc1-key",
+                "value": "WWjgNQPd1o72DemnwpLpDdksRiO1y4mmrOtCvx592a05m/RiHc4Upw==",
+                "tags": [
+                    "key",
+                    "function",
+                    "auto"
+                ],
+                "secret": true
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/subscriptions",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/kfc')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ],
+            "properties": {
+                "scope": "[concat(resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name')), '/apis')]",
+                "displayName": "kfc",
+                "state": "active",
+                "allowTracing": false
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/subscriptions",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/master')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ],
+            "properties": {
+                "scope": "[concat(resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name')), '/')]",
+                "displayName": "Built-in all-access subscription",
+                "state": "active",
+                "allowTracing": true
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/tags",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/paynow')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ],
+            "properties": {
+                "displayName": "paynow"
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/tags",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/QRcode')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ],
+            "properties": {
+                "displayName": "QRcode"
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/templates",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/AccountClosedDeveloper')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ],
+            "properties": {
+                "subject": "Thank you for using the $OrganizationName API!",
+                "body": "<!DOCTYPE html >\r\n<html>\r\n  <head />\r\n  <body>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">Dear $DevFirstName $DevLastName,</p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">\r\n          On behalf of $OrganizationName and our customers we thank you for giving us a try. Your $OrganizationName API account is now closed.\r\n        </p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">Thank you,</p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">Your $OrganizationName Team</p>\r\n    <a href=\"$DevPortalUrl\">$DevPortalUrl</a>\r\n    <p />\r\n  </body>\r\n</html>",
+                "title": "Developer farewell letter",
+                "description": "Developers receive this farewell email after they close their account.",
+                "parameters": [
+                    {
+                        "name": "DevFirstName",
+                        "title": "Developer first name"
+                    },
+                    {
+                        "name": "DevLastName",
+                        "title": "Developer last name"
+                    },
+                    {
+                        "name": "OrganizationName",
+                        "title": "Organization name"
+                    },
+                    {
+                        "name": "DevPortalUrl",
+                        "title": "Developer portal URL"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/templates",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/ApplicationApprovedNotificationMessage')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ],
+            "properties": {
+                "subject": "Your application $AppName is published in the application gallery",
+                "body": "<!DOCTYPE html >\r\n<html>\r\n  <head />\r\n  <body>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">Dear $DevFirstName $DevLastName,</p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">\r\n          We are happy to let you know that your request to publish the $AppName application in the application gallery has been approved. Your application has been published and can be viewed <a href=\"http://$DevPortalUrl/Applications/Details/$AppId\">here</a>.\r\n        </p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">Best,</p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">The $OrganizationName API Team</p>\r\n  </body>\r\n</html>",
+                "title": "Application gallery submission approved",
+                "description": "Developers who submitted their application for publication in the application gallery on the developer portal receive this email after their submission is approved.",
+                "parameters": [
+                    {
+                        "name": "AppId",
+                        "title": "Application id"
+                    },
+                    {
+                        "name": "AppName",
+                        "title": "Application name"
+                    },
+                    {
+                        "name": "DevFirstName",
+                        "title": "Developer first name"
+                    },
+                    {
+                        "name": "DevLastName",
+                        "title": "Developer last name"
+                    },
+                    {
+                        "name": "OrganizationName",
+                        "title": "Organization name"
+                    },
+                    {
+                        "name": "DevPortalUrl",
+                        "title": "Developer portal URL"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/templates",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/ConfirmSignUpIdentityDefault')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ],
+            "properties": {
+                "subject": "Please confirm your new $OrganizationName API account",
+                "body": "<!DOCTYPE html >\r\n<html>\r\n  <head>\r\n    <meta charset=\"UTF-8\" />\r\n    <title>Letter</title>\r\n  </head>\r\n  <body>\r\n    <table width=\"100%\">\r\n      <tr>\r\n        <td>\r\n          <p style=\"font-size:12pt;font-family:'Segoe UI'\">Dear $DevFirstName $DevLastName,</p>\r\n          <p style=\"font-size:12pt;font-family:'Segoe UI'\"></p>\r\n          <p style=\"font-size:12pt;font-family:'Segoe UI'\">Thank you for joining the $OrganizationName API program! We host a growing number of cool APIs and strive to provide an awesome experience for API developers.</p>\r\n          <p style=\"font-size:12pt;font-family:'Segoe UI'\">First order of business is to activate your account and get you going. To that end, please click on the following link:</p>\r\n          <p style=\"font-size:12pt;font-family:'Segoe UI'\">\r\n            <a id=\"confirmUrl\" href=\"$ConfirmUrl\" style=\"text-decoration:none\">\r\n              <strong>$ConfirmUrl</strong>\r\n            </a>\r\n          </p>\r\n          <p style=\"font-size:12pt;font-family:'Segoe UI'\">If clicking the link does not work, please copy-and-paste or re-type it into your browser's address bar and hit \"Enter\".</p>\r\n          <p style=\"font-size:12pt;font-family:'Segoe UI'\">Thank you,</p>\r\n          <p style=\"font-size:12pt;font-family:'Segoe UI'\">$OrganizationName API Team</p>\r\n          <p style=\"font-size:12pt;font-family:'Segoe UI'\">\r\n            <a href=\"$DevPortalUrl\">$DevPortalUrl</a>\r\n          </p>\r\n        </td>\r\n      </tr>\r\n    </table>\r\n  </body>\r\n</html>",
+                "title": "New developer account confirmation",
+                "description": "Developers receive this email to confirm their e-mail address after they sign up for a new account.",
+                "parameters": [
+                    {
+                        "name": "DevFirstName",
+                        "title": "Developer first name"
+                    },
+                    {
+                        "name": "DevLastName",
+                        "title": "Developer last name"
+                    },
+                    {
+                        "name": "OrganizationName",
+                        "title": "Organization name"
+                    },
+                    {
+                        "name": "DevPortalUrl",
+                        "title": "Developer portal URL"
+                    },
+                    {
+                        "name": "ConfirmUrl",
+                        "title": "Developer activation URL"
+                    },
+                    {
+                        "name": "DevPortalHost",
+                        "title": "Developer portal hostname"
+                    },
+                    {
+                        "name": "ConfirmQuery",
+                        "title": "Query string part of the activation URL"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/templates",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/EmailChangeIdentityDefault')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ],
+            "properties": {
+                "subject": "Please confirm the new email associated with your $OrganizationName API account",
+                "body": "<!DOCTYPE html >\r\n<html>\r\n  <head>\r\n    <meta charset=\"UTF-8\" />\r\n    <title>Letter</title>\r\n  </head>\r\n  <body>\r\n    <table width=\"100%\">\r\n      <tr>\r\n        <td>\r\n          <p style=\"font-size:12pt;font-family:'Segoe UI'\">Dear $DevFirstName $DevLastName,</p>\r\n          <p style=\"font-size:12pt;font-family:'Segoe UI'\"></p>\r\n          <p style=\"font-size:12pt;font-family:'Segoe UI'\">You are receiving this email because you made a change to the email address on your $OrganizationName API account.</p>\r\n          <p style=\"font-size:12pt;font-family:'Segoe UI'\">Please click on the following link to confirm the change:</p>\r\n          <p style=\"font-size:12pt;font-family:'Segoe UI'\">\r\n            <a id=\"confirmUrl\" href=\"$ConfirmUrl\" style=\"text-decoration:none\">\r\n              <strong>$ConfirmUrl</strong>\r\n            </a>\r\n          </p>\r\n          <p style=\"font-size:12pt;font-family:'Segoe UI'\">If clicking the link does not work, please copy-and-paste or re-type it into your browser's address bar and hit \"Enter\".</p>\r\n          <p style=\"font-size:12pt;font-family:'Segoe UI'\">Thank you,</p>\r\n          <p style=\"font-size:12pt;font-family:'Segoe UI'\">$OrganizationName API Team</p>\r\n          <p style=\"font-size:12pt;font-family:'Segoe UI'\">\r\n            <a href=\"$DevPortalUrl\">$DevPortalUrl</a>\r\n          </p>\r\n        </td>\r\n      </tr>\r\n    </table>\r\n  </body>\r\n</html>",
+                "title": "Email change confirmation",
+                "description": "Developers receive this email to confirm a new e-mail address after they change their existing one associated with their account.",
+                "parameters": [
+                    {
+                        "name": "DevFirstName",
+                        "title": "Developer first name"
+                    },
+                    {
+                        "name": "DevLastName",
+                        "title": "Developer last name"
+                    },
+                    {
+                        "name": "OrganizationName",
+                        "title": "Organization name"
+                    },
+                    {
+                        "name": "DevPortalUrl",
+                        "title": "Developer portal URL"
+                    },
+                    {
+                        "name": "ConfirmUrl",
+                        "title": "Developer confirmation URL"
+                    },
+                    {
+                        "name": "DevPortalHost",
+                        "title": "Developer portal hostname"
+                    },
+                    {
+                        "name": "ConfirmQuery",
+                        "title": "Query string part of the confirmation URL"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/templates",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/InviteUserNotificationMessage')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ],
+            "properties": {
+                "subject": "You are invited to join the $OrganizationName developer network",
+                "body": "<!DOCTYPE html >\r\n<html>\r\n  <head />\r\n  <body>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">Dear $DevFirstName $DevLastName,</p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">\r\n          Your account has been created. Please follow the link below to visit the $OrganizationName developer portal and claim it:\r\n        </p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">\r\n      <a href=\"$ConfirmUrl\">$ConfirmUrl</a>\r\n    </p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">Best,</p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">The $OrganizationName API Team</p>\r\n  </body>\r\n</html>",
+                "title": "Invite user",
+                "description": "An e-mail invitation to create an account, sent on request by API publishers.",
+                "parameters": [
+                    {
+                        "name": "OrganizationName",
+                        "title": "Organization name"
+                    },
+                    {
+                        "name": "DevFirstName",
+                        "title": "Developer first name"
+                    },
+                    {
+                        "name": "DevLastName",
+                        "title": "Developer last name"
+                    },
+                    {
+                        "name": "ConfirmUrl",
+                        "title": "Confirmation link"
+                    },
+                    {
+                        "name": "DevPortalHost",
+                        "title": "Developer portal hostname"
+                    },
+                    {
+                        "name": "ConfirmQuery",
+                        "title": "Query string part of the confirmation link"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/templates",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/NewCommentNotificationMessage')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ],
+            "properties": {
+                "subject": "$IssueName issue has a new comment",
+                "body": "<!DOCTYPE html >\r\n<html>\r\n  <head />\r\n  <body>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">Dear $DevFirstName $DevLastName,</p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">This is a brief note to let you know that $CommenterFirstName $CommenterLastName made the following comment on the issue $IssueName you created:</p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">$CommentText</p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">\r\n          To view the issue on the developer portal click <a href=\"http://$DevPortalUrl/issues/$IssueId\">here</a>.\r\n        </p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">Best,</p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">The $OrganizationName API Team</p>\r\n  </body>\r\n</html>",
+                "title": "New comment added to an issue",
+                "description": "Developers receive this email when someone comments on the issue they created on the Issues page of the developer portal.",
+                "parameters": [
+                    {
+                        "name": "DevFirstName",
+                        "title": "Developer first name"
+                    },
+                    {
+                        "name": "DevLastName",
+                        "title": "Developer last name"
+                    },
+                    {
+                        "name": "CommenterFirstName",
+                        "title": "Commenter first name"
+                    },
+                    {
+                        "name": "CommenterLastName",
+                        "title": "Commenter last name"
+                    },
+                    {
+                        "name": "IssueId",
+                        "title": "Issue id"
+                    },
+                    {
+                        "name": "IssueName",
+                        "title": "Issue name"
+                    },
+                    {
+                        "name": "CommentText",
+                        "title": "Comment text"
+                    },
+                    {
+                        "name": "OrganizationName",
+                        "title": "Organization name"
+                    },
+                    {
+                        "name": "DevPortalUrl",
+                        "title": "Developer portal URL"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/templates",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/NewDeveloperNotificationMessage')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ],
+            "properties": {
+                "subject": "Welcome to the $OrganizationName API!",
+                "body": "<!DOCTYPE html >\r\n<html>\r\n  <head>\r\n    <meta charset=\"UTF-8\" />\r\n    <title>Letter</title>\r\n  </head>\r\n  <body>\r\n    <h1 style=\"color:#000505;font-size:18pt;font-family:'Segoe UI'\">\r\n          Welcome to <span style=\"color:#003363\">$OrganizationName API!</span></h1>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">Dear $DevFirstName $DevLastName,</p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">Your $OrganizationName API program registration is completed and we are thrilled to have you as a customer. Here are a few important bits of information for your reference:</p>\r\n    <table width=\"100%\" style=\"margin:20px 0\">\r\n      <tr>\r\n            #if ($IdentityProvider == \"Basic\")\r\n            <td width=\"50%\" style=\"height:40px;vertical-align:top;font-family:'Segoe UI';font-size:12pt\">\r\n              Please use the following <strong>username</strong> when signing into any of the ${OrganizationName}-hosted developer portals:\r\n            </td><td style=\"vertical-align:top;font-family:'Segoe UI';font-size:12pt\"><strong>$DevUsername</strong></td>\r\n            #else\r\n            <td width=\"50%\" style=\"height:40px;vertical-align:top;font-family:'Segoe UI';font-size:12pt\">\r\n              Please use the following <strong>$IdentityProvider account</strong> when signing into any of the ${OrganizationName}-hosted developer portals:\r\n            </td><td style=\"vertical-align:top;font-family:'Segoe UI';font-size:12pt\"><strong>$DevUsername</strong></td>            \r\n            #end\r\n          </tr>\r\n      <tr>\r\n        <td style=\"height:40px;vertical-align:top;font-family:'Segoe UI';font-size:12pt\">\r\n              We will direct all communications to the following <strong>email address</strong>:\r\n            </td>\r\n        <td style=\"vertical-align:top;font-family:'Segoe UI';font-size:12pt\">\r\n          <a href=\"mailto:$DevEmail\" style=\"text-decoration:none\">\r\n            <strong>$DevEmail</strong>\r\n          </a>\r\n        </td>\r\n      </tr>\r\n    </table>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">Best of luck in your API pursuits!</p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">$OrganizationName API Team</p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">\r\n      <a href=\"http://$DevPortalUrl\">$DevPortalUrl</a>\r\n    </p>\r\n  </body>\r\n</html>",
+                "title": "Developer welcome letter",
+                "description": "Developers receive this “welcome” email after they confirm their new account.",
+                "parameters": [
+                    {
+                        "name": "DevFirstName",
+                        "title": "Developer first name"
+                    },
+                    {
+                        "name": "DevLastName",
+                        "title": "Developer last name"
+                    },
+                    {
+                        "name": "DevUsername",
+                        "title": "Developer user name"
+                    },
+                    {
+                        "name": "DevEmail",
+                        "title": "Developer email"
+                    },
+                    {
+                        "name": "OrganizationName",
+                        "title": "Organization name"
+                    },
+                    {
+                        "name": "DevPortalUrl",
+                        "title": "Developer portal URL"
+                    },
+                    {
+                        "name": "IdentityProvider",
+                        "title": "Identity Provider selected by Organization"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/templates",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/NewIssueNotificationMessage')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ],
+            "properties": {
+                "subject": "Your request $IssueName was received",
+                "body": "<!DOCTYPE html >\r\n<html>\r\n  <head />\r\n  <body>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">Dear $DevFirstName $DevLastName,</p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">Thank you for contacting us. Our API team will review your issue and get back to you soon.</p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">\r\n          Click this <a href=\"http://$DevPortalUrl/issues/$IssueId\">link</a> to view or edit your request.\r\n        </p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">Best,</p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">The $OrganizationName API Team</p>\r\n  </body>\r\n</html>",
+                "title": "New issue received",
+                "description": "This email is sent to developers after they create a new topic on the Issues page of the developer portal.",
+                "parameters": [
+                    {
+                        "name": "DevFirstName",
+                        "title": "Developer first name"
+                    },
+                    {
+                        "name": "DevLastName",
+                        "title": "Developer last name"
+                    },
+                    {
+                        "name": "IssueId",
+                        "title": "Issue id"
+                    },
+                    {
+                        "name": "IssueName",
+                        "title": "Issue name"
+                    },
+                    {
+                        "name": "OrganizationName",
+                        "title": "Organization name"
+                    },
+                    {
+                        "name": "DevPortalUrl",
+                        "title": "Developer portal URL"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/templates",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/PasswordResetByAdminNotificationMessage')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ],
+            "properties": {
+                "subject": "Your password was reset",
+                "body": "<!DOCTYPE html >\r\n<html>\r\n  <head />\r\n  <body>\r\n    <table width=\"100%\">\r\n      <tr>\r\n        <td>\r\n          <p style=\"font-size:12pt;font-family:'Segoe UI'\">Dear $DevFirstName $DevLastName,</p>\r\n          <p style=\"font-size:12pt;font-family:'Segoe UI'\"></p>\r\n          <p style=\"font-size:12pt;font-family:'Segoe UI'\">The password of your $OrganizationName API account has been reset, per your request.</p>\r\n          <p style=\"font-size:12pt;font-family:'Segoe UI'\">\r\n                Your new password is: <strong>$DevPassword</strong></p>\r\n          <p style=\"font-size:12pt;font-family:'Segoe UI'\">Please make sure to change it next time you sign in.</p>\r\n          <p style=\"font-size:12pt;font-family:'Segoe UI'\">Thank you,</p>\r\n          <p style=\"font-size:12pt;font-family:'Segoe UI'\">$OrganizationName API Team</p>\r\n          <p style=\"font-size:12pt;font-family:'Segoe UI'\">\r\n            <a href=\"$DevPortalUrl\">$DevPortalUrl</a>\r\n          </p>\r\n        </td>\r\n      </tr>\r\n    </table>\r\n  </body>\r\n</html>",
+                "title": "Password reset by publisher notification (Password reset by admin)",
+                "description": "Developers receive this email when the publisher resets their password.",
+                "parameters": [
+                    {
+                        "name": "DevFirstName",
+                        "title": "Developer first name"
+                    },
+                    {
+                        "name": "DevLastName",
+                        "title": "Developer last name"
+                    },
+                    {
+                        "name": "DevPassword",
+                        "title": "New Developer password"
+                    },
+                    {
+                        "name": "OrganizationName",
+                        "title": "Organization name"
+                    },
+                    {
+                        "name": "DevPortalUrl",
+                        "title": "Developer portal URL"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/templates",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/PasswordResetIdentityDefault')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ],
+            "properties": {
+                "subject": "Your password change request",
+                "body": "<!DOCTYPE html >\r\n<html>\r\n  <head>\r\n    <meta charset=\"UTF-8\" />\r\n    <title>Letter</title>\r\n  </head>\r\n  <body>\r\n    <table width=\"100%\">\r\n      <tr>\r\n        <td>\r\n          <p style=\"font-size:12pt;font-family:'Segoe UI'\">Dear $DevFirstName $DevLastName,</p>\r\n          <p style=\"font-size:12pt;font-family:'Segoe UI'\"></p>\r\n          <p style=\"font-size:12pt;font-family:'Segoe UI'\">You are receiving this email because you requested to change the password on your $OrganizationName API account.</p>\r\n          <p style=\"font-size:12pt;font-family:'Segoe UI'\">Please click on the link below and follow instructions to create your new password:</p>\r\n          <p style=\"font-size:12pt;font-family:'Segoe UI'\">\r\n            <a id=\"resetUrl\" href=\"$ConfirmUrl\" style=\"text-decoration:none\">\r\n              <strong>$ConfirmUrl</strong>\r\n            </a>\r\n          </p>\r\n          <p style=\"font-size:12pt;font-family:'Segoe UI'\">If clicking the link does not work, please copy-and-paste or re-type it into your browser's address bar and hit \"Enter\".</p>\r\n          <p style=\"font-size:12pt;font-family:'Segoe UI'\">Thank you,</p>\r\n          <p style=\"font-size:12pt;font-family:'Segoe UI'\">$OrganizationName API Team</p>\r\n          <p style=\"font-size:12pt;font-family:'Segoe UI'\">\r\n            <a href=\"$DevPortalUrl\">$DevPortalUrl</a>\r\n          </p>\r\n        </td>\r\n      </tr>\r\n    </table>\r\n  </body>\r\n</html>",
+                "title": "Password change confirmation",
+                "description": "Developers receive this email when they request a password change of their account. The purpose of the email is to verify that the account owner made the request and to provide a one-time perishable URL for changing the password.",
+                "parameters": [
+                    {
+                        "name": "DevFirstName",
+                        "title": "Developer first name"
+                    },
+                    {
+                        "name": "DevLastName",
+                        "title": "Developer last name"
+                    },
+                    {
+                        "name": "OrganizationName",
+                        "title": "Organization name"
+                    },
+                    {
+                        "name": "DevPortalUrl",
+                        "title": "Developer portal URL"
+                    },
+                    {
+                        "name": "ConfirmUrl",
+                        "title": "Developer new password instruction URL"
+                    },
+                    {
+                        "name": "DevPortalHost",
+                        "title": "Developer portal hostname"
+                    },
+                    {
+                        "name": "ConfirmQuery",
+                        "title": "Query string part of the instruction URL"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/templates",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/PurchaseDeveloperNotificationMessage')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ],
+            "properties": {
+                "subject": "Your subscription to the $ProdName",
+                "body": "<!DOCTYPE html >\r\n<html>\r\n  <head />\r\n  <body>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">Greetings $DevFirstName $DevLastName!</p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">\r\n          Thank you for subscribing to the <a href=\"http://$DevPortalUrl/products/$ProdId\"><strong>$ProdName</strong></a> and welcome to the $OrganizationName developer community. We are delighted to have you as part of the team and are looking forward to the amazing applications you will build using our API!\r\n        </p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">Below are a few subscription details for your reference:</p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">\r\n      <ul>\r\n            #if ($SubStartDate != \"\")\r\n            <li style=\"font-size:12pt;font-family:'Segoe UI'\">Start date: $SubStartDate</li>\r\n            #end\r\n            \r\n            #if ($SubTerm != \"\")\r\n            <li style=\"font-size:12pt;font-family:'Segoe UI'\">Subscription term: $SubTerm</li>\r\n            #end\r\n          </ul>\r\n    </p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">\r\n            Visit the developer <a href=\"http://$DevPortalUrl/developer\">profile area</a> to manage your subscription and subscription keys\r\n        </p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">A couple of pointers to help get you started:</p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">\r\n      <strong>\r\n        <a href=\"http://$DevPortalUrl/docs/services?product=$ProdId\">Learn about the API</a>\r\n      </strong>\r\n    </p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">The API documentation provides all information necessary to make a request and to process a response. Code samples are provided per API operation in a variety of languages. Moreover, an interactive console allows making API calls directly from the developer portal without writing any code.</p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">\r\n      <strong>\r\n        <a href=\"http://$DevPortalUrl/applications\">Feature your app in the app gallery</a>\r\n      </strong>\r\n    </p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">You can publish your application on our gallery for increased visibility to potential new users.</p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">\r\n      <strong>\r\n        <a href=\"http://$DevPortalUrl/issues\">Stay in touch</a>\r\n      </strong>\r\n    </p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">\r\n          If you have an issue, a question, a suggestion, a request, or if you just want to tell us something, go to the <a href=\"http://$DevPortalUrl/issues\">Issues</a> page on the developer portal and create a new topic.\r\n        </p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">Happy hacking,</p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">The $OrganizationName API Team</p>\r\n    <a style=\"font-size:12pt;font-family:'Segoe UI'\" href=\"http://$DevPortalUrl\">$DevPortalUrl</a>\r\n  </body>\r\n</html>",
+                "title": "New subscription activated",
+                "description": "Developers receive this acknowledgement email after subscribing to a product.",
+                "parameters": [
+                    {
+                        "name": "DevFirstName",
+                        "title": "Developer first name"
+                    },
+                    {
+                        "name": "DevLastName",
+                        "title": "Developer last name"
+                    },
+                    {
+                        "name": "ProdId",
+                        "title": "Product ID"
+                    },
+                    {
+                        "name": "ProdName",
+                        "title": "Product name"
+                    },
+                    {
+                        "name": "OrganizationName",
+                        "title": "Organization name"
+                    },
+                    {
+                        "name": "SubStartDate",
+                        "title": "Subscription start date"
+                    },
+                    {
+                        "name": "SubTerm",
+                        "title": "Subscription term"
+                    },
+                    {
+                        "name": "DevPortalUrl",
+                        "title": "Developer portal URL"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/templates",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/QuotaLimitApproachingDeveloperNotificationMessage')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ],
+            "properties": {
+                "subject": "You are approaching an API quota limit",
+                "body": "<!DOCTYPE html >\r\n<html>\r\n  <head>\r\n    <style>\r\n          body {font-size:12pt; font-family:\"Segoe UI\",\"Segoe WP\",\"Tahoma\",\"Arial\",\"sans-serif\";}\r\n          .alert { color: red; }\r\n          .child1 { padding-left: 20px; }\r\n          .child2 { padding-left: 40px; }\r\n          .number { text-align: right; }\r\n          .text { text-align: left; }\r\n          th, td { padding: 4px 10px; min-width: 100px; }\r\n          th { background-color: #DDDDDD;}\r\n        </style>\r\n  </head>\r\n  <body>\r\n    <p>Greetings $DevFirstName $DevLastName!</p>\r\n    <p>\r\n          You are approaching the quota limit on you subscription to the <strong>$ProdName</strong> product (primary key $SubPrimaryKey).\r\n          #if ($QuotaResetDate != \"\")\r\n          This quota will be renewed on $QuotaResetDate.\r\n          #else\r\n          This quota will not be renewed.\r\n          #end\r\n        </p>\r\n    <p>Below are details on quota usage for the subscription:</p>\r\n    <p>\r\n      <table>\r\n        <thead>\r\n          <th class=\"text\">Quota Scope</th>\r\n          <th class=\"number\">Calls</th>\r\n          <th class=\"number\">Call Quota</th>\r\n          <th class=\"number\">Bandwidth</th>\r\n          <th class=\"number\">Bandwidth Quota</th>\r\n        </thead>\r\n        <tbody>\r\n          <tr>\r\n            <td class=\"text\">Subscription</td>\r\n            <td class=\"number\">\r\n                  #if ($CallsAlert == true)\r\n                  <span class=\"alert\">$Calls</span>\r\n                  #else\r\n                  $Calls\r\n                  #end\r\n                </td>\r\n            <td class=\"number\">$CallQuota</td>\r\n            <td class=\"number\">\r\n                  #if ($BandwidthAlert == true)\r\n                  <span class=\"alert\">$Bandwidth</span>\r\n                  #else\r\n                  $Bandwidth\r\n                  #end\r\n                </td>\r\n            <td class=\"number\">$BandwidthQuota</td>\r\n          </tr>\r\n              #foreach ($api in $Apis)\r\n              <tr><td class=\"child1 text\">API: $api.Name</td><td class=\"number\">\r\n                  #if ($api.CallsAlert == true)\r\n                  <span class=\"alert\">$api.Calls</span>\r\n                  #else\r\n                  $api.Calls\r\n                  #end\r\n                </td><td class=\"number\">$api.CallQuota</td><td class=\"number\">\r\n                  #if ($api.BandwidthAlert == true)\r\n                  <span class=\"alert\">$api.Bandwidth</span>\r\n                  #else\r\n                  $api.Bandwidth\r\n                  #end\r\n                </td><td class=\"number\">$api.BandwidthQuota</td></tr>\r\n              #foreach ($operation in $api.Operations)\r\n              <tr><td class=\"child2 text\">Operation: $operation.Name</td><td class=\"number\">\r\n                  #if ($operation.CallsAlert == true)\r\n                  <span class=\"alert\">$operation.Calls</span>\r\n                  #else\r\n                  $operation.Calls\r\n                  #end\r\n                </td><td class=\"number\">$operation.CallQuota</td><td class=\"number\">\r\n                  #if ($operation.BandwidthAlert == true)\r\n                  <span class=\"alert\">$operation.Bandwidth</span>\r\n                  #else\r\n                  $operation.Bandwidth\r\n                  #end\r\n                </td><td class=\"number\">$operation.BandwidthQuota</td></tr>\r\n              #end\r\n              #end\r\n            </tbody>\r\n      </table>\r\n    </p>\r\n    <p>Thank you,</p>\r\n    <p>$OrganizationName API Team</p>\r\n    <a href=\"$DevPortalUrl\">$DevPortalUrl</a>\r\n    <p />\r\n  </body>\r\n</html>",
+                "title": "Developer quota limit approaching notification",
+                "description": "Developers receive this email to alert them when they are approaching a quota limit.",
+                "parameters": [
+                    {
+                        "name": "DevFirstName",
+                        "title": "Developer first name"
+                    },
+                    {
+                        "name": "DevLastName",
+                        "title": "Developer last name"
+                    },
+                    {
+                        "name": "ProdName",
+                        "title": "Product name"
+                    },
+                    {
+                        "name": "OrganizationName",
+                        "title": "Organization name"
+                    },
+                    {
+                        "name": "SubPrimaryKey",
+                        "title": "Primary Subscription key"
+                    },
+                    {
+                        "name": "DevPortalUrl",
+                        "title": "Developer portal URL"
+                    },
+                    {
+                        "name": "QuotaResetDate",
+                        "title": "Quota reset date"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/templates",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/RejectDeveloperNotificationMessage')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ],
+            "properties": {
+                "subject": "Your subscription request for the $ProdName",
+                "body": "<!DOCTYPE html >\r\n<html>\r\n  <head />\r\n  <body>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">Dear $DevFirstName $DevLastName,</p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">\r\n          We would like to inform you that we reviewed your subscription request for the <strong>$ProdName</strong>.\r\n        </p>\r\n        #if ($SubDeclineReason == \"\")\r\n        <p style=\"font-size:12pt;font-family:'Segoe UI'\">Regretfully, we were unable to approve it, as subscriptions are temporarily suspended at this time.</p>\r\n        #else\r\n        <p style=\"font-size:12pt;font-family:'Segoe UI'\">\r\n          Regretfully, we were unable to approve it at this time for the following reason:\r\n          <div style=\"margin-left: 1.5em;\"> $SubDeclineReason </div></p>\r\n        #end\r\n        <p style=\"font-size:12pt;font-family:'Segoe UI'\"> We truly appreciate your interest. </p><p style=\"font-size:12pt;font-family:'Segoe UI'\">All the best,</p><p style=\"font-size:12pt;font-family:'Segoe UI'\">The $OrganizationName API Team</p><a style=\"font-size:12pt;font-family:'Segoe UI'\" href=\"http://$DevPortalUrl\">$DevPortalUrl</a></body>\r\n</html>",
+                "title": "Subscription request declined",
+                "description": "This email is sent to developers when their subscription requests for products requiring publisher approval is declined.",
+                "parameters": [
+                    {
+                        "name": "DevFirstName",
+                        "title": "Developer first name"
+                    },
+                    {
+                        "name": "DevLastName",
+                        "title": "Developer last name"
+                    },
+                    {
+                        "name": "SubDeclineReason",
+                        "title": "Reason for declining subscription"
+                    },
+                    {
+                        "name": "ProdName",
+                        "title": "Product name"
+                    },
+                    {
+                        "name": "OrganizationName",
+                        "title": "Organization name"
+                    },
+                    {
+                        "name": "DevPortalUrl",
+                        "title": "Developer portal URL"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/templates",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/RequestDeveloperNotificationMessage')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ],
+            "properties": {
+                "subject": "Your subscription request for the $ProdName",
+                "body": "<!DOCTYPE html >\r\n<html>\r\n  <head />\r\n  <body>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">Dear $DevFirstName $DevLastName,</p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">\r\n          Thank you for your interest in our <strong>$ProdName</strong> API product!\r\n        </p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">\r\n          We were delighted to receive your subscription request. We will promptly review it and get back to you at <strong>$DevEmail</strong>.\r\n        </p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">Thank you,</p>\r\n    <p style=\"font-size:12pt;font-family:'Segoe UI'\">The $OrganizationName API Team</p>\r\n    <a style=\"font-size:12pt;font-family:'Segoe UI'\" href=\"http://$DevPortalUrl\">$DevPortalUrl</a>\r\n  </body>\r\n</html>",
+                "title": "Subscription request received",
+                "description": "This email is sent to developers to acknowledge receipt of their subscription requests for products requiring publisher approval.",
+                "parameters": [
+                    {
+                        "name": "DevFirstName",
+                        "title": "Developer first name"
+                    },
+                    {
+                        "name": "DevLastName",
+                        "title": "Developer last name"
+                    },
+                    {
+                        "name": "DevEmail",
+                        "title": "Developer email"
+                    },
+                    {
+                        "name": "ProdName",
+                        "title": "Product name"
+                    },
+                    {
+                        "name": "OrganizationName",
+                        "title": "Organization name"
+                    },
+                    {
+                        "name": "DevPortalUrl",
+                        "title": "Developer portal URL"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/users",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/1')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ],
+            "properties": {
+                "firstName": "Administrator",
+                "email": "qiushengw@gmail.com",
+                "state": "active",
+                "identities": [
+                    {
+                        "provider": "Azure",
+                        "id": "qiushengw@gmail.com"
+                    }
+                ],
+                "lastName": "[parameters('users_1_lastName')]"
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/users",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/123222205-qq-com')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ],
+            "properties": {
+                "firstName": "testuser1",
+                "lastName": "smbc",
+                "email": "123222205@qq.com",
+                "state": "active",
+                "identities": [
+                    {
+                        "provider": "Basic",
+                        "id": "123222205@qq.com"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/users",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/CUST-000001')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ],
+            "properties": {
+                "firstName": "QIUSHENG",
+                "lastName": "WANG",
+                "email": "wqs918@gmail.com",
+                "state": "active",
+                "identities": [
+                    {
+                        "provider": "Basic",
+                        "id": "wqs918@gmail.com"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/users",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/customid-00001')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ],
+            "properties": {
+                "firstName": "jiaqi",
+                "lastName": "gu",
+                "email": "gujiaqi@gmail.com",
+                "state": "active",
+                "identities": [
+                    {
+                        "provider": "Basic",
+                        "id": "gujiaqi@gmail.com"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/apis",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/paynow-qrcode-api')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]",
+                "[resourceId('Microsoft.ApiManagement/service/apiVersionSets', parameters('service_smbcapimtest_name'), '611b832405e476e7fbb86ac4')]"
+            ],
+            "properties": {
+                "displayName": "Paynow QRcode API",
+                "apiRevision": "1",
+                "description": "\n* Generate a PayNow QR code for SMBC corporate customers, to support instant transfer of payment wthout exchange the account numbers\n* Usage of this API is limited to SMBC corporate customs, the API supports both static and dynamic QR code generation\n* This API is called using the Synchronize HTTP POST method, The response is returned in JSON format\n\n## Transport Security\nAll operations in this API require SSL (using TLS1.2 and above) for transport-level security\n\n## General API Info\nPlease refer to this [link](http://external.doc.com) for general information applicable to all APIs\n",
+                "subscriptionRequired": true,
+                "path": "paynow/paynow-qr",
+                "protocols": [
+                    "https"
+                ],
+                "isCurrent": true,
+                "apiVersion": "v1",
+                "apiVersionSetId": "[resourceId('Microsoft.ApiManagement/service/apiVersionSets', parameters('service_smbcapimtest_name'), '611b832405e476e7fbb86ac4')]"
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/apis/operations",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/qiushengtestfuncapp1/get-httptrigger1')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service/apis', parameters('service_smbcapimtest_name'), 'qiushengtestfuncapp1')]",
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ],
+            "properties": {
+                "displayName": "HttpTrigger1",
+                "method": "GET",
+                "urlTemplate": "/HttpTrigger1",
+                "templateParameters": [],
+                "responses": []
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/apis/operations",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/qiushengtestfuncapp1/post-httptrigger1')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service/apis', parameters('service_smbcapimtest_name'), 'qiushengtestfuncapp1')]",
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ],
+            "properties": {
+                "displayName": "HttpTrigger1",
+                "method": "POST",
+                "urlTemplate": "/HttpTrigger1",
+                "templateParameters": [],
+                "responses": []
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/apis/operations",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/paynow-qrcode-api/post-qrcode')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service/apis', parameters('service_smbcapimtest_name'), 'paynow-qrcode-api')]",
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ],
+            "properties": {
+                "displayName": "Generate a paynow QRcode",
+                "method": "POST",
+                "urlTemplate": "/qrcode",
+                "templateParameters": [],
+                "description": "Example of a post operation with a body parameter",
+                "request": {
+                    "description": "customer object to be created",
+                    "queryParameters": [],
+                    "headers": [
+                        {
+                            "name": "x-smbcapac-messageid",
+                            "description": "Unique request Id from API client.",
+                            "type": "string",
+                            "required": true,
+                            "values": []
+                        },
+                        {
+                            "name": "x-smbcapac-country",
+                            "description": "Local country code for SMBC APAC branch.",
+                            "type": "string",
+                            "required": true,
+                            "values": [
+                                "SG",
+                                "TH",
+                                "MY",
+                                "AU",
+                                "PH",
+                                "VN",
+                                "MM",
+                                "IN"
+                            ]
+                        }
+                    ],
+                    "representations": [
+                        {
+                            "contentType": "application/json",
+                            "schemaId": "611b83254634611270a5c47f",
+                            "typeName": "QRRequest",
+                            "sample": "{\r\n  \"proxyType\": \"T01LLXXXXA\",\r\n  \"proxyValue\": \"T01LLXXXXA\",\r\n  \"amount\": \"14.53\",\r\n  \"referenceText\": \"pay house loan from JJ\",\r\n  \"qrcodeSize\": 20,\r\n  \"expiryDate\": \"20210918\"\r\n}"
+                        }
+                    ]
+                },
+                "responses": [
+                    {
+                        "statusCode": 200,
+                        "description": "Return the customer object",
+                        "representations": [
+                            {
+                                "contentType": "application/json",
+                                "schemaId": "611b83254634611270a5c47f",
+                                "typeName": "200Response-json",
+                                "sample": "{\r\n  \"amount\": \"14.53\",\r\n  \"disclaimer\": \"Disclaimer: xxxxxx\",\r\n  \"qrCodeData\": \"iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAYAAAA9zQYyAAAAAklEQVR4AewaftIAAAdpSURBVO3BQW4ER5IAQfcC//9lXx3jlEChm5QmN8zsH6x1iYe1LvKw1kUe1rrIw1oXeVjrIg9rXeRhrYs8rHWRh7Uu8rDWRR7WusjDWhd5WOsiD2td5GGti/zwIZW/VPGGyknFpDJVnKhMFW+oTBWTylQxqXyi4kTlL1V84mGtizysdZGHtS7yw5dVfJPKGypvqLyhcqIyVZxUnFRMKlPFpHJSMalMFScV36TyTQ9rXeRhrYs8rHWRH36ZyhsVb6hMFScqJxWTyjepnFS8oXJS8ZtU3qj4TQ9rXeRhrYs8rHWRHy6j8kbFpDJVnKi8UXGiclLxhspJxU0e1rrIw1oXeVjrIj9cpuITFZPKGxWTylTxTSpTxf9nD2td5GGtizysdZEfflnFX1I5qZhUpopPqLyh8k0qJxXfVPFf8rDWRR7WusjDWhf54ctU/k0Vk8o3VUwqU8Wk8kbFpPJGxaRyojJVnKj8lz2sdZGHtS7ysNZF7B/8D1OZKk5U3qiYVKaKN1T+UsWkMlXc5GGtizysdZGHtS5i/+ADKlPFpPJNFScqU8WkclIxqXyi4jepfFPFpPJNFb/pYa2LPKx1kYe1LvLDhyomlW+qOFF5o+JE5aTiRGVSOamYVE4qTiomlZOKSeWNiknl3/Sw1kUe1rrIw1oX+eFDKlPFicpJxaQyVbyhclLxhspUcVJxojJVvFFxUnGiMlWcqEwqU8WkcqIyVXziYa2LPKx1kYe1LvLDH6t4o2JSmSomlaliUvlExaTyhsqJylQxqZxUfELljYpJ5URlqvimh7Uu8rDWRR7WusgPH6qYVE4qJpWpYlKZKk4qJpUTlaniROWkYlKZKt5QmSomlTdUTiomlanijYoTlaniEw9rXeRhrYs8rHWRHz6kclLxiYo3VKaKE5UTlaliUjmpOFH5N1W8oTJVTBUnKr/pYa2LPKx1kYe1LvLDhypOVKaKE5WTikllqphUpoqpYlKZKt5QOak4qZhUTiomlZOKT1ScqEwVU8VveljrIg9rXeRhrYv88CGVqWKqOKl4Q+WNihOVN1ROKt6oOKl4o2JSmVROKv6SylTxiYe1LvKw1kUe1rrIDx+q+ITKVDGpTBVvqJxUTCpvVEwqJxWTyknFicpUcVIxqfybKr7pYa2LPKx1kYe1LvLDh1SmijcqJpWpYlKZKiaVqeITKp+omFROKiaVqeITKlPFN1W8oTJVfOJhrYs8rHWRh7Uu8sOXqXyTylQxqbyhMlWcVEwqk8pU8UbFpDJVnFRMKlPFpHKicqJyUjGpTBW/6WGtizysdZGHtS7yw5dVvKEyVXyiYlKZKj5RcaLyhspUcaLyiYpJZaqYVD5R8Zce1rrIw1oXeVjrIj/8x6i8UTGpTBWTyknFicpUcVLxhspUMVW8ofKGylTxhspU8Zce1rrIw1oXeVjrIvYPPqByUvGGylQxqfylit+kclIxqUwVJypTxW9SeaPimx7WusjDWhd5WOsiP3yoYlKZVE4qTlTeqPgmlaniROWk4qRiUpkqTlROVE4qflPFpDJVfOJhrYs8rHWRh7Uu8sMfq3ij4g2Vk4pJ5aTijYo3Kk4qTlSmikllqjhROal4o+IvPax1kYe1LvKw1kV++LKKSeVE5URlqphUpopJZVL5hMpJxaQyVbyhMlX8m1ROKiaVv/Sw1kUe1rrIw1oX+eFDKm+onFS8UXFSMalMFZ+o+CaVqWJSmSreUJkqpopJZao4UZkqTlS+6WGtizysdZGHtS7yw5dVnKi8ofJGxRsqU8Wk8ptUpopJZap4o2JSmVTeUJkq/kse1rrIw1oXeVjrIj/8yyomlanimyomlUllqjhRmSpOVD6hclJxUjGpnFRMKpPKicpfeljrIg9rXeRhrYv88MtUTlSmikllqphUTiomlaliUjlRmSpOKj5RcaJyovIJlU9UTCq/6WGtizysdZGHtS7yw4cqTio+UfEJlanipGJS+YTKVHGiMlV8U8WkMlW8oTJVvFHxTQ9rXeRhrYs8rHWRHz6k8pcqpopvUvmEyonKScWk8obKN6lMFScqU8VfeljrIg9rXeRhrYv88GUV36RyojJVTConFd9UcaJyojJVnKhMFZPKJyreqJhUTlSmik88rHWRh7Uu8rDWRX74ZSpvVPymikllqjhRmVSmik9UTCpTxVTxhsqJyjdVTCq/6WGtizysdZGHtS7yw+Uq3lA5qZhUTlSmit+kclIxqZxUTCpTxaRyUjGpfNPDWhd5WOsiD2td5IfLqEwVJxWTylQxqZyofEJlqvhExUnFGxWTyknFX3pY6yIPa13kYa2L/PDLKn5TxaTyhspUcVLxCZU3VE4qpooTlZOKSWWqmComlROV3/Sw1kUe1rrIw1oX+eHLVP6SyhsqU8WkMlVMKlPFpHJSMam8UTGpTBUnFZPKpPKbKiaVb3pY6yIPa13kYa2L2D9Y6xIPa13kYa2LPKx1kYe1LvKw1kUe1rrIw1oXeVjrIg9rXeRhrYs8rHWRh7Uu8rDWRR7WusjDWhf5P7FqwKCAqNSzAAAAAElFTkSuQmCC\"\r\n}"
+                            }
+                        ],
+                        "headers": []
+                    },
+                    {
+                        "statusCode": 400,
+                        "description": "Bad request - General client error",
+                        "representations": [
+                            {
+                                "contentType": "application/json",
+                                "schemaId": "611b83254634611270a5c47f",
+                                "typeName": "GatewayError401Response-json",
+                                "sample": "{\r\n  \"message\": \"string\",\r\n  \"reasonCode\": \"string\",\r\n  \"reason\": \"string\"\r\n}"
+                            }
+                        ],
+                        "headers": []
+                    },
+                    {
+                        "statusCode": 401,
+                        "description": "Authorization error",
+                        "representations": [
+                            {
+                                "contentType": "application/json",
+                                "schemaId": "611b83254634611270a5c47f",
+                                "typeName": "GatewayError401Response-json",
+                                "sample": "{\r\n  \"message\": \"string\",\r\n  \"reasonCode\": \"string\",\r\n  \"reason\": \"string\"\r\n}"
+                            }
+                        ],
+                        "headers": []
+                    },
+                    {
+                        "statusCode": 500,
+                        "description": "Internal server error",
+                        "representations": [
+                            {
+                                "contentType": "application/json",
+                                "schemaId": "611b83254634611270a5c47f",
+                                "typeName": "GatewayError401Response-json",
+                                "sample": "{\r\n  \"message\": \"string\",\r\n  \"reasonCode\": \"string\",\r\n  \"reason\": \"string\"\r\n}"
+                            }
+                        ],
+                        "headers": []
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/apis/schemas",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/paynow-qrcode-api/611b83254634611270a5c47f')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service/apis', parameters('service_smbcapimtest_name'), 'paynow-qrcode-api')]",
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ],
+            "properties": {
+                "contentType": "application/vnd.oai.openapi.components+json",
+                "document": {}
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/apis/tags",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/paynow-qrcode-api/paynow')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service/apis', parameters('service_smbcapimtest_name'), 'paynow-qrcode-api')]",
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/apis/tags",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/paynow-qrcode-api/QRcode')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service/apis', parameters('service_smbcapimtest_name'), 'paynow-qrcode-api')]",
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/groups/users",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/administrators/1')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service/groups', parameters('service_smbcapimtest_name'), 'administrators')]",
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/groups/users",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/developers/1')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service/groups', parameters('service_smbcapimtest_name'), 'developers')]",
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/groups/users",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/developers/123222205-qq-com')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service/groups', parameters('service_smbcapimtest_name'), 'developers')]",
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/groups/users",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/developers/CUST-000001')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service/groups', parameters('service_smbcapimtest_name'), 'developers')]",
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/groups/users",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/developers/customid-00001')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service/groups', parameters('service_smbcapimtest_name'), 'developers')]",
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/products/apis",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/data-api/paynow-qrcode-api')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service/products', parameters('service_smbcapimtest_name'), 'data-api')]",
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/products/apis",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/paynow/paynow-qrcode-api')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service/products', parameters('service_smbcapimtest_name'), 'paynow')]",
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/products/apis",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/data-api/qiushengtestfuncapp1')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service/products', parameters('service_smbcapimtest_name'), 'data-api')]",
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/products/groups",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/data-api/administrators')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service/products', parameters('service_smbcapimtest_name'), 'data-api')]",
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/products/groups",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/paynow/administrators')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service/products', parameters('service_smbcapimtest_name'), 'paynow')]",
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/products/groups",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/data-api/developers')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service/products', parameters('service_smbcapimtest_name'), 'data-api')]",
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/products/groups",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/paynow/developers')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service/products', parameters('service_smbcapimtest_name'), 'paynow')]",
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/products/groups",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/paynow/guests')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service/products', parameters('service_smbcapimtest_name'), 'paynow')]",
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/apis/operations/policies",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/paynow-qrcode-api/post-qrcode/policy')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service/apis/operations', parameters('service_smbcapimtest_name'), 'paynow-qrcode-api', 'post-qrcode')]",
+                "[resourceId('Microsoft.ApiManagement/service/apis', parameters('service_smbcapimtest_name'), 'paynow-qrcode-api')]",
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ],
+            "properties": {
+                "value": "<!--\r\n    IMPORTANT:\r\n    - Policy elements can appear only within the <inbound>, <outbound>, <backend> section elements.\r\n    - To apply a policy to the incoming request (before it is forwarded to the backend service), place a corresponding policy element within the <inbound> section element.\r\n    - To apply a policy to the outgoing response (before it is sent back to the caller), place a corresponding policy element within the <outbound> section element.\r\n    - To add a policy, place the cursor at the desired insertion point and select a policy from the sidebar.\r\n    - To remove a policy, delete the corresponding policy statement from the policy document.\r\n    - Position the <base> element within a section element to inherit all policies from the corresponding section element in the enclosing scope.\r\n    - Remove the <base> element to prevent inheriting policies from the corresponding section element in the enclosing scope.\r\n    - Policies are applied in the order of their appearance, from the top down.\r\n    - Comments within policy elements are not supported and may disappear. Place your comments between policy elements or at a higher level scope.\r\n-->\r\n<policies>\r\n  <inbound>\r\n    <cors allow-credentials=\"true\">\r\n      <allowed-origins>\r\n        <origin>https://smbcapimtest.developer.azure-api.net</origin>\r\n        <origin>https://login.microsoftonline.com</origin>\r\n      </allowed-origins>\r\n      <allowed-methods preflight-result-max-age=\"300\">\r\n        <method>*</method>\r\n      </allowed-methods>\r\n      <allowed-headers>\r\n        <header>*</header>\r\n      </allowed-headers>\r\n      <expose-headers>\r\n        <header>*</header>\r\n      </expose-headers>\r\n    </cors>\r\n    <validate-jwt header-name=\"Authorization\" failed-validation-httpcode=\"401\" failed-validation-error-message=\"Unauthorized. you are not a SMBC valid customer,HAHAH\">\r\n      <openid-config url=\"https://login.microsoftonline.com/common/v2.0/.well-known/openid-configuration\" />\r\n      <required-claims>\r\n        <claim name=\"aud\" match=\"any\">\r\n          <value>api://3d259433-b03d-4769-833c-67553fbc3d39</value>\r\n          <value>3d259433-b03d-4769-833c-67553fbc3d39</value>\r\n        </claim>\r\n      </required-claims>\r\n    </validate-jwt>\r\n    <set-backend-service id=\"apim-generated-policy\" backend-id=\"smbcpaynowfunc1\" />\r\n    <base />\r\n    <set-header name=\"request-email\" exists-action=\"override\">\r\n      <value>@(context.User.Email)</value>\r\n    </set-header>\r\n    <set-header name=\"request-id\" exists-action=\"override\">\r\n      <value>@(context.User.Id)</value>\r\n    </set-header>\r\n    <set-backend-service base-url=\"https://smbcpaynowfunc1.azurewebsites.net/api\" />\r\n  </inbound>\r\n  <backend>\r\n    <base />\r\n  </backend>\r\n  <outbound>\r\n    <base />\r\n  </outbound>\r\n  <on-error>\r\n    <base />\r\n  </on-error>\r\n</policies>",
+                "format": "xml"
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/apis/operations/policies",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/qiushengtestfuncapp1/get-httptrigger1/policy')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service/apis/operations', parameters('service_smbcapimtest_name'), 'qiushengtestfuncapp1', 'get-httptrigger1')]",
+                "[resourceId('Microsoft.ApiManagement/service/apis', parameters('service_smbcapimtest_name'), 'qiushengtestfuncapp1')]",
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ],
+            "properties": {
+                "value": "<policies>\r\n  <inbound>\r\n    <base />\r\n    <set-header name=\"request-email\" exists-action=\"override\">\r\n      <value>@(context.User.Email)</value>\r\n    </set-header>\r\n    <set-header name=\"request-id\" exists-action=\"override\">\r\n      <value>@(context.User.Id)</value>\r\n    </set-header>\r\n    <set-backend-service id=\"apim-generated-policy\" backend-id=\"qiushengtestfuncapp1\" />\r\n  </inbound>\r\n  <backend>\r\n    <base />\r\n  </backend>\r\n  <outbound>\r\n    <base />\r\n  </outbound>\r\n  <on-error>\r\n    <base />\r\n  </on-error>\r\n</policies>",
+                "format": "xml"
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/apis/operations/policies",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/qiushengtestfuncapp1/post-httptrigger1/policy')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service/apis/operations', parameters('service_smbcapimtest_name'), 'qiushengtestfuncapp1', 'post-httptrigger1')]",
+                "[resourceId('Microsoft.ApiManagement/service/apis', parameters('service_smbcapimtest_name'), 'qiushengtestfuncapp1')]",
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ],
+            "properties": {
+                "value": "<policies>\r\n  <inbound>\r\n    <base />\r\n    <ip-filter action=\"allow\">\r\n      <address-range from=\"13.66.140.128\" to=\"13.66.140.143\" />\r\n      <address>20.197.117.27</address>\r\n      <address>203.92.101.62</address>\r\n    </ip-filter>\r\n    <set-header name=\"request-email\" exists-action=\"override\">\r\n      <value>@(context.User.Email)</value>\r\n    </set-header>\r\n    <set-header name=\"request-id\" exists-action=\"override\">\r\n      <value>@(context.User.Id)</value>\r\n    </set-header>\r\n    <set-backend-service id=\"apim-generated-policy\" backend-id=\"qiushengtestfuncapp1\" />\r\n  </inbound>\r\n  <backend>\r\n    <base />\r\n  </backend>\r\n  <outbound>\r\n    <base />\r\n  </outbound>\r\n  <on-error>\r\n    <base />\r\n  </on-error>\r\n</policies>",
+                "format": "xml"
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/apis/operations/tags",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/paynow-qrcode-api/post-qrcode/QRcode')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service/apis/operations', parameters('service_smbcapimtest_name'), 'paynow-qrcode-api', 'post-qrcode')]",
+                "[resourceId('Microsoft.ApiManagement/service/apis', parameters('service_smbcapimtest_name'), 'paynow-qrcode-api')]",
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/subscriptions",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/611b7f324634611270a5c472')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]",
+                "[resourceId('Microsoft.ApiManagement/service/users', parameters('service_smbcapimtest_name'), '1')]",
+                "[resourceId('Microsoft.ApiManagement/service/products', parameters('service_smbcapimtest_name'), 'paynow')]"
+            ],
+            "properties": {
+                "ownerId": "[resourceId('Microsoft.ApiManagement/service/users', parameters('service_smbcapimtest_name'), '1')]",
+                "scope": "[resourceId('Microsoft.ApiManagement/service/products', parameters('service_smbcapimtest_name'), 'paynow')]",
+                "state": "active",
+                "allowTracing": true,
+                "displayName": "[parameters('subscriptions_611b7f324634611270a5c472_displayName')]"
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/subscriptions",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/611cc8e84634611270a5c4b5')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]",
+                "[resourceId('Microsoft.ApiManagement/service/users', parameters('service_smbcapimtest_name'), '1')]",
+                "[resourceId('Microsoft.ApiManagement/service/products', parameters('service_smbcapimtest_name'), 'data-api')]"
+            ],
+            "properties": {
+                "ownerId": "[resourceId('Microsoft.ApiManagement/service/users', parameters('service_smbcapimtest_name'), '1')]",
+                "scope": "[resourceId('Microsoft.ApiManagement/service/products', parameters('service_smbcapimtest_name'), 'data-api')]",
+                "state": "active",
+                "allowTracing": true,
+                "displayName": "[parameters('subscriptions_611cc8e84634611270a5c4b5_displayName')]"
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/subscriptions",
+            "apiVersion": "2021-01-01-preview",
+            "name": "[concat(parameters('service_smbcapimtest_name'), '/61276b605c8e0236cc438eeb')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_smbcapimtest_name'))]",
+                "[resourceId('Microsoft.ApiManagement/service/users', parameters('service_smbcapimtest_name'), 'CUST-000001')]",
+                "[resourceId('Microsoft.ApiManagement/service/products', parameters('service_smbcapimtest_name'), 'data-api')]"
+            ],
+            "properties": {
+                "ownerId": "[resourceId('Microsoft.ApiManagement/service/users', parameters('service_smbcapimtest_name'), 'CUST-000001')]",
+                "scope": "[resourceId('Microsoft.ApiManagement/service/products', parameters('service_smbcapimtest_name'), 'data-api')]",
+                "displayName": "ISG-Data",
+                "state": "active"
+            }
+        }
+    ]
+}
