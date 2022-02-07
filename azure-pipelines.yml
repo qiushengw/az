@@ -1,6 +1,6 @@
 jobs:
-- job: Build
-  displayName: Build Maven Project
+- job: Download
+  displayName: Get Package from Blob
   steps:
   - task: AzureCLI@1
     displayName: 'Azure CLI '
@@ -8,7 +8,7 @@ jobs:
       azureSubscription: wqs-azure
       scriptLocation: inlineScript
       inlineScript: |
-        az storage blob download -c scfpackage --account-name scfreleasefile -n release/spring-petclinic-2.6.0-SNAPSHOT.jar -f spring-petclinic-2.6.0-SNAPSHOT.jar --account-name scfreleasefile --account-key wqq3FxsHMbPProSPHvWY7bPpAnVZVVRwC4rRc5nQYYcGuxnwtqv3OEy2tTiMeGSANIxwAKFzfH3tiRfaNLc0kA==
+        az storage blob download -c scfpackage --account-name scfreleasefile -n release/spring-petclinic-2.6.0-SNAPSHOT.jar -f $(System.DefaultWorkingDirectory)/target/spring-petclinic-2.6.0-SNAPSHOT.jar --account-name scfreleasefile --account-key wqq3FxsHMbPProSPHvWY7bPpAnVZVVRwC4rRc5nQYYcGuxnwtqv3OEy2tTiMeGSANIxwAKFzfH3tiRfaNLc0kA==
   - task: CopyFiles@2
     displayName: 'Copy Files to artifact staging directory'
     inputs:
