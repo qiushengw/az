@@ -1,5 +1,5 @@
 jobs:
-- job: Download
+- job: Build
   displayName: Get Package from Blob
   steps:
   - task: AzureCLI@1
