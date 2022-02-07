@@ -8,6 +8,7 @@ jobs:
       azureSubscription: wqs-azure
       scriptLocation: inlineScript
       inlineScript: |
+        mkdir -p $(System.DefaultWorkingDirectory)/target
         az storage blob download -c scfpackage --account-name scfreleasefile -n release/spring-petclinic-2.6.0-SNAPSHOT.jar -f $(System.DefaultWorkingDirectory)/target/spring-petclinic-2.6.0-SNAPSHOT.jar --account-name scfreleasefile --account-key wqq3FxsHMbPProSPHvWY7bPpAnVZVVRwC4rRc5nQYYcGuxnwtqv3OEy2tTiMeGSANIxwAKFzfH3tiRfaNLc0kA==
   - task: CopyFiles@2
     displayName: 'Copy Files to artifact staging directory'
