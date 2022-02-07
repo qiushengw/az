@@ -1,19 +1,61 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
+jobs:
+- job: Build
+  displayName: Build Maven Project
+  steps:
+  - task: AzureCLI@1
+    displayName: 'Azure CLI '
+    inputs:
+      azureSubscription: 91fe2878-83c3-41f0-8cce-f26fbbf78ed0
+      scriptLocation: inlineScript
+      inlineScript: |
+        az storage blob download -c scfpackage --account-name scfreleasefile -n release/spring-petclinic-2.6.0-SNAPSHOT.jar -f spring-petclinic-2.6.0-SNAPSHOT.jar --account-name scfreleasefile --account-key wqq3FxsHMbPProSPHvWY7bPpAnVZVVRwC4rRc5nQYYcGuxnwtqv3OEy2tTiMeGSANIxwAKFzfH3tiRfaNLc0kA==
+  - task: CopyFiles@2
+    displayName: 'Copy Files to artifact staging directory'
+    inputs:
+      SourceFolder: '$(System.DefaultWorkingDirectory)'
+      Contents: '**/target/*.?(war|jar)'
+      TargetFolder: $(Build.ArtifactStagingDirectory)
+  - upload: $(Build.ArtifactStagingDirectory)
+    artifact: drop
 
-trigger:
-- main
 
-pool:
-  vmImage: ubuntu-latest
-
-steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
-
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+- deployment: VMDeploy
+  dependsOn: Build
+  displayName: web
+  environment:
+    name:  test-pub-vm
+    resourceType: VirtualMachine
+    tags: windows
+  strategy:
+      rolling:
+        maxParallel: 5  #for percentages, mention as x%
+        preDeploy:
+          steps:
+          - download: current
+            artifact: drop
+          - script: echo initialize, cleanup, backup, install certs
+        deploy:
+          steps:
+          - task: CmdLine@2
+            inputs:
+              script: 'C:/scripts/start.bat'
+        #  - task: Bash@3
+        #    inputs:
+        #      targetType: 'inline'
+        #      script: |
+        #        # Modify deployment script based on the app type
+        #        echo "Starting deployment script run"
+        #        java -jar '$(Pipeline.Workspace)/drop/target/spring-petclinic-2.6.0-SNAPSHOT.jar'
+        routeTraffic:
+          steps:
+          - script: echo routing traffic
+        postRouteTraffic:
+          steps:
+          - script: echo health check post-route traffic
+        on:
+          failure:
+            steps:
+            - script: echo Restore from backup! This is on failure
+          success:
+            steps:
+            - script: echo Notify! This is on success
